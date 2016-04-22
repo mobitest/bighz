@@ -1,0 +1,38 @@
+[{"id":0,"text":"信息项","children":[
+	{"id":1,"text":"公安","children":[
+                    	 {"id":101,"text":"常住人口基本信息","attributes":{"code":"czrk","url":"person_tree.json"}},
+                       {"id":102,"text":"暂住人口基本信息","attributes":{"code":"ldrk"}},
+                       {"id":103,"text":"家庭成员信息"},
+                       {"id":104,"text":"配偶信息"},
+                       {"id":105,"text":"驾驶证信息"},
+                       {"id":106,"text":"机动车信息"},
+                       {"id":107,"text":"现场违法信息"},
+                       {"id":108,"text":"非现场违法信息"},
+                       {"id":109,"text":"交通事故信息"},
+                       {"id":110,"text":"非机动车信息"}
+                       ]},
+ 	{"id":2,"text":"公积金","children":[ 
+                       {"id":21,"text":"公积金信息"},
+                       {"id":22,"text":"缴存信息"},
+                       {"id":23,"text":"贷款信息"}
+                       ]},
+	{"id":3,"text":"人社", "children":[   
+                       {"id":31,"text":"社保信息"},
+                       {"id":32,"text":"缴存信息"},
+                       {"id":33,"text":"医疗享受情况"},
+                       {"id":34,"text":"失业金领取情况"},
+                       {"id":35,"text":"工伤待遇"},
+                       {"id":36,"text":"城居退休人员享受情况"},
+                       {"id":37,"text":"失业人员信息"},
+                       {"id":38,"text":"就业人员信息"}
+                       ]},
+	 {"id":4,"text":"住保","children":[   
+                       {"id":41,"text":"房产信息"}
+                     ]},
+     {"id":5,"text":"民政","children":[ 
+                       {"id":53,"text":"结婚信息","attributes":{"code":"marry"}},
+                       {"id":54,"text":"离婚信息","attributes":{"code":"divorce"}},
+                       {"id":55,"text":"低保信息","attributes":{"code":"dbxx"}}
+                       ]}
+      ]
+}]

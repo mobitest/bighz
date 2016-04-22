@@ -1,6 +1,10 @@
 /*替换icons成fa风格*/
 $(function(){
-	var icons=[
+	useFaIcons();
+})
+
+function useFaIcons () {
+		var icons=[
 	["icon-save","fa-save"],
 	["icon-cut","fa-cut"],
 	["icon-add","fa-plus-circle"],
@@ -19,4 +23,25 @@ $(function(){
 		$("."+ic[0]).removeClass(ic[0]).addClass("fa fa-blue "+ic[1])
 	}
 
-	})
+}
+	
+/**
+返回fa风格的无意义图标
+参数：i 位置
+**/	
+function freeIcon (i) {
+	var icons = [
+	"fa-search",
+	"fa-heart ",
+	"fa-star  ",
+	"fa-user  ",
+	"fa-film  ",
+	"fa-times ",
+	"fa-gear  ",
+	"fa-cog   "
+	];
+
+	i = i? i : Math.round(Math.random()*10,0)
+	i = i%8
+	return icons[i];
+}

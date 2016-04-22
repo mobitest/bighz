@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>大数据</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="../easyui-1.4.5-hc/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../easyui-1.4.5-hc/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="hzbig.css">
+	
+	<script type="text/javascript" src="../easyui-1.4.5-hc/jquery.min.js"></script>
+	<script type="text/javascript" src="../easyui-1.4.5-hc/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../easyui-1.4.5-hc/iconfa.js"></script>
+</head>
+<body>
+	
+	<div style="margin:20px 0">
+		<h2 style="display:inline">人口库查询</h2>
+		<div style="display:inline;margin-left:120px">
+		请输入身份证号<input type=text ></input><input type=button value="查询" style="margin-left:20px">
+		<a href="#" class="easyui-linkbutton" onclick="treeHandle(true)">测试</a> 
+		</div>
+	</div>
+
+	<div id="cc" style="width: 98%; height: 385px;">
+
+			
+		<div data-options="region:'west'" style="width:250px;">
+				<ul id="infoNav" class="easyui-tree" 
+					data-options="url:'person_tree.json',method:'get',
+					animate:true,checkbox:true,onLoadSuccess:function(){autoHeight()},
+					onClick:function(node){nodeClickHandle(node)},
+					onCheck:function(node){nodeClickHandle(node)},
+					formatter:function(node){
+                        var s = node.text;
+                        if (node.children){
+                            s += '&nbsp;<span class=\'bubble\'>'+ node.children.length + '</span>';
+                        }
+                        return s;
+                    }
+					">
+					</ul>
+		</div>
+		<div id="result" data-options="region:'center',border:false" style="padding:10px">
+	
+		</div>
+	</div>
+	<script type="text/javascript">
+
+		$(function(){
+			$('#cc').layout();
+		});
+		
+		//根据内容，自动计算高度，处理面板缩放，免除滚动条
+		function autoHeight(){
+			var c = $('#cc');
+			var maxIncH = 0;//新增加高度
+			var maxH=0;
+			var pnames = ["center","west"]
+			for(var i in pnames){
+				var p = c.layout('panel',pnames[i]);
+				if(p.length==0) continue;
+				var oldH = p.panel('panel').outerHeight();
+				p.panel('resize', {height:'auto'});
+				var newH = p.panel('panel').outerHeight();
+				maxH = Math.max( maxH, newH);
+				maxIncH = Math.max(maxIncH, newH - oldH );
+				//console.log(pnames[i]+";"+oldH+"-->"+newH+";increase height:"+ maxIncH+";current h:"+ c.height());
+			}
+			 
+			//if(maxIncH>0){
+				c.layout('resize',{
+					//height: (c.height() + maxIncH )
+					height:maxH
+				});
+			//}
+			//console.log("-->"+c.height());
+	
+		}
+			
+		
+		function treeHandle(reload){
+			var nodes = $('#infoNav').tree('getChildren');
+			//var nodes = $('#infoNav').tree('getChecked');
+			var s = '';
+			for(var i=0; i<nodes.length; i++){
+				var code = getNodeCode(nodes[i]);
+				if(!code ) continue;
+				if(nodes[i].checked){
+						var isNew = showBlock(code, nodes[i].text);
+						if(isNew=='new' || reload){
+							if(nodes[i].attributes["url"] ){
+									loadData(code, nodes[i].attributes["url"]);
+							}
+						}
+				}else{
+					hideBlock(code);
+				}
+			}
+			return;
+			showBlock('czrk','常住人口');
+			showBlock('ldrk');
+			showBlock('dbxx');
+
+		}
+		
+		function getNodeCode(node){
+					return node.attributes && node.attributes["code"] ?
+					node.attributes["code"]
+					:false;			
+		}
+		
+		//添加数据块，并显示
+		//code:代码
+		//label:标题
+		//返回值：new新创建
+		function showBlock(code,label, toggleable){
+			label = label? label : code;
+			toggleable = toggleable? toggleable:false;
+			var id = code;
+			var rtn = 'new';
+			//已经有的，显示
+			if($("#"+id).length>0) {
+				rtn = 'old';
+					if(toggleable)
+						$("#"+id).parent().toggle("fold");
+					else{
+						$("#"+id).parent().show();
+					}
+			}else{//新创建
+				$("#result").append("<div id="+id+"/>")
+				$("#"+id).panel({
+			    	href:'sub_'+code + '.html',title:label,width:"98%",border:true, 
+			    	loadingMessage:"加载中...",style:{"margin-top":10},closable:true,
+			    	iconCls:function(){return "fa "+ freeIcon();},
+			    	headerCls:"panel-header-x"
+				})
+				$("#"+id).parent().hover(function(){$(this).addClass("yy");}, function(){$(this).removeClass("yy");});	
+			}
+			
+			setTimeout("autoHeight();",50);	//渲染可能不够快，适当延时
+			return rtn;
+		}
+		
+		function hideBlock(code){
+			$("#"+code).parent().hide();
+		}
+		
+		var SFZMHM='2341234'
+		
+		/*访问远程服务，加载数据*/
+		function loadData(code,remoteURL, callbackFun){
+        	$.ajax({async:true,url:remoteURL,
+                data:{'autoInfo.SFZMHM':SFZMHM},
+                success:function(myData){
+                	eval( callbackFun? callbackFun :"callback_"+code+"("+myData+")");
+                },cache:false,type:'get'});
+		}
+		
+		//节点的点击处理，显示对应数据块
+		function nodeClickHandle(node){
+			//
+			if(node.children) return treeHandle();
+
+			var code = getNodeCode(node)
+			if(!code) return;
+			if (node.checked) {
+				showBlock(code, node.text);
+				location.href="#"+getNodeCode(node);
+			}else{
+				hideBlock(code,node.text);
+			}
+		}
+	</script>
+</body>
+</html>

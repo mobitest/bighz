@@ -25,14 +25,64 @@ h2 {
 #menuLeft li a{
     text-decoration: none;
     color: #333;
+    padding-left:5px;
 }
 #menuLeft li{
+	margin:0 15px ;
 	line-height:20px;
 	color: #333;
     position: relative;
     display: block;
-    padding: 10px 15px;
-    margin-bottom: -1px;
+    padding: 10px 0px;
     background-color: #fff;
-    border:1px solid #ddd;
+    border-bottom:1px solid #ddd;
 }	
+
+/*宽度充满的表格*/
+.tbl-fullwidth{
+	margin:5px;
+	width:98%;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+
+.tbl-fullwidth th {
+	background-color: #dedede;
+}
+.tbl-fullwidth tr {
+}
+.tbl-fullwidth td {
+	border:solid #F5F5F5; border-width:0px 1px 1px 0px; 
+	border-width: 1px;
+	padding: 5px;
+}
+
+/*阴影*/
+.yy{box-shadow:0 0 10px #a9a9a9; -webkit-box-shadow:0 0 10px #a9a9a9; -moz-box-shadow:0 0 10px #a9a9a9;}
+
+/*面板大标题*/
+.panel-header-x{
+	height:28px;
+	color:#BBB;
+}
+.panel-header-x div{
+	font-size:16px;
+	line-height:28px;
+}
+.panel-header-x .panel-icon{
+	margin-top: -14px;
+    overflow: visible;
+    left:8px;
+ }
+ 
+ /*泡泡数字*/
+ .bubble{
+ 	color: #ddd;
+    padding: 1px 5px 1px;
+    margin: -3px 2px 0;
+    background: #777;
+    border-radius: 10px;
+    font-size: 8px;
+    line-height:8px;
+  }
