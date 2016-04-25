@@ -9,32 +9,36 @@
 
 	<link rel="stylesheet" type="text/css" href="../easyui-1.4.5-hc/themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="../easyui-1.4.5-hc/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="../easyui-1.4.5-hc/themes/color.css">
 	<link rel="stylesheet" type="text/css" href="hzbig.css">
 	
 	<script type="text/javascript" src="../easyui-1.4.5-hc/jquery.min.js"></script>
 	<script type="text/javascript" src="../easyui-1.4.5-hc/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="../easyui-1.4.5-hc/iconfa.js"></script>
+	<script type="text/javascript" src="../js/watermark.js"></script>
+	<script type="text/javascript" src="../js/js.cookie.js"></script>
 </head>
 <body>
 	
-	<div style="margin:20px 0">
+	<div style="margin:20px 0;position:relative;z-index:1">
 		<h2 style="display:inline">人口库查询</h2>
 		<div style="display:inline;margin-left:120px">
-		请输入身份证号<input type=text ></input><input type=button value="查询" style="margin-left:20px">
-		<a href="#" class="easyui-linkbutton" onclick="treeHandle(true)">测试</a> 
+		请输入身份证号
+ 
+		<input type=text id="qid" name="qid"  class="easyui-tooltip" title="请输入18位身份证号"></input>
+	   <a href="javascript:treeHandle(true)" class="easyui-linkbutton c1" data-options="iconCls:'fa fa-search'" style="width:80px">查询</a>
 		</div>
 	</div>
-
+	<hr>
 	<div id="cc" style="width: 98%; height: 385px;">
-
-			
-		<div data-options="region:'west'" style="width:250px;">
+		<div data-options="region:'west'" style="width:260px;">
 				<ul id="infoNav" class="easyui-tree" 
 					data-options="url:'person_tree.json',method:'get',
-					animate:true,checkbox:true,onLoadSuccess:function(){autoHeight()},
+					animate:true,checkbox:true,
 					onClick:function(node){nodeClickHandle(node)},
 					onCheck:function(node){nodeClickHandle(node)},
-					formatter:function(node){
+					onLoadSuccess:function(node,data){setNodeBubble(node, data);autoHeight();treeHandle();},
+					formatter:function(node){// 显示下级数
                         var s = node.text;
                         if (node.children){
                             s += '&nbsp;<span class=\'bubble\'>'+ node.children.length + '</span>';
@@ -52,6 +56,7 @@
 
 		$(function(){
 			$('#cc').layout();
+			watermarker("#result");
 		});
 		
 		//根据内容，自动计算高度，处理面板缩放，免除滚动条
@@ -67,23 +72,21 @@
 				p.panel('resize', {height:'auto'});
 				var newH = p.panel('panel').outerHeight();
 				maxH = Math.max( maxH, newH);
-				maxIncH = Math.max(maxIncH, newH - oldH );
-				//console.log(pnames[i]+";"+oldH+"-->"+newH+";increase height:"+ maxIncH+";current h:"+ c.height());
 			}
 			 
-			//if(maxIncH>0){
 				c.layout('resize',{
-					//height: (c.height() + maxIncH )
 					height:maxH
 				});
-			//}
-			//console.log("-->"+c.height());
 	
 		}
 			
 		
 		function treeHandle(reload){
 			var nodes = $('#infoNav').tree('getChildren');
+			var qid = $("#qid").val();//查询参数
+			if(qid=="")  {
+				$("#qid").tooltip("show").focus();
+			}
 			//var nodes = $('#infoNav').tree('getChecked');
 			var s = '';
 			for(var i=0; i<nodes.length; i++){
@@ -91,20 +94,51 @@
 				if(!code ) continue;
 				if(nodes[i].checked){
 						var isNew = showBlock(code, nodes[i].text);
+						if(qid=="") continue;
 						if(isNew=='new' || reload){
 							if(nodes[i].attributes["url"] ){
-									loadData(code, nodes[i].attributes["url"]);
+									loadData(code, nodes[i].attributes["url"],false,qid);
 							}
 						}
 				}else{
 					hideBlock(code);
 				}
 			}
+			
+			statusCookie();
 			return;
-			showBlock('czrk','常住人口');
-			showBlock('ldrk');
-			showBlock('dbxx');
-
+		}
+		
+		/*TODO:记忆选中过的节点，恢复*/
+		function statusCookie(){
+			var nodes = $('#infoNav').tree('getChildren');
+			var checks = new Array();
+			for(var i=0; i<nodes.length; i++){
+				var n= nodes[i];
+				checks.push({n : n.checked});
+				}
+			Cookies.set("navInfo",checks);
+		}
+		
+		/**
+		设置节点的气泡信息
+		**/
+		function setNodeBubble (n,dd) {
+			//需要改为远程获取
+			var info=[{'id':101,'count':29400000},
+			{'id':102,'count':2134233455}
+			];
+			
+			for (var i = 0; i < info.length; i++) {
+				var node = $("#infoNav").tree('find', info[i]['id']);
+				var n = info[i]['count']
+				//缩写
+				var num = n<10000? n: 
+				n<100000000? Math.round(n/10000,0) +'万': 
+				Math.round(n/10000000,0) +'亿';
+				var ele = "<span class='bubble2'>${num}</span>".replace('${num}',num);
+			    $(node.target).append(ele);
+			}
 		}
 		
 		function getNodeCode(node){
@@ -113,6 +147,8 @@
 					:false;			
 		}
 		
+		function blockId(code){return code;}
+		
 		//添加数据块，并显示
 		//code:代码
 		//label:标题
@@ -120,7 +156,7 @@
 		function showBlock(code,label, toggleable){
 			label = label? label : code;
 			toggleable = toggleable? toggleable:false;
-			var id = code;
+			var id = blockId(code);
 			var rtn = 'new';
 			//已经有的，显示
 			if($("#"+id).length>0) {
@@ -146,13 +182,17 @@
 		}
 		
 		function hideBlock(code){
-			$("#"+code).parent().hide();
+			$("#"+blockId(code)).parent().hide();
 		}
 		
 		var SFZMHM='2341234'
 		
 		/*访问远程服务，加载数据*/
 		function loadData(code,remoteURL, callbackFun){
+			if($('#'+blockId(code)).length ==0 ) {
+				return setTimeout(function(){loadData(code,remoteURL, callbackFun);},50);
+			}
+        	
         	$.ajax({async:true,url:remoteURL,
                 data:{'autoInfo.SFZMHM':SFZMHM},
                 success:function(myData){
@@ -174,6 +214,7 @@
 				hideBlock(code,node.text);
 			}
 		}
+		
 	</script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 [{"id":0,"text":"信息项","children":[
 	{"id":1,"text":"公安","children":[
-                    	 {"id":101,"text":"常住人口基本信息","attributes":{"code":"czrk","url":"person_tree.json"}},
-                       {"id":102,"text":"暂住人口基本信息","attributes":{"code":"ldrk"}},
+                    	 {"id":101,"text":"常住人口基本信息","checked":true,"attributes":{"code":"czrk","template":"sub_czrk.html","url":"person_tree.json"}},
+                       {"id":102,"text":"暂住人口基本信息","checked":true,"attributes":{"code":"ldrk"}},
                        {"id":103,"text":"家庭成员信息"},
                        {"id":104,"text":"配偶信息"},
                        {"id":105,"text":"驾驶证信息"},
