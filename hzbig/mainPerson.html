@@ -126,7 +126,7 @@
 		function setNodeBubble (n,dd) {
 			//需要改为远程获取
 			var info=[{'id':101,'count':29400000},
-			{'id':102,'count':2134233455}
+			{'id':103,'count':2134233455}
 			];
 			
 			for (var i = 0; i < info.length; i++) {
@@ -188,13 +188,13 @@
 		var SFZMHM='2341234'
 		
 		/*访问远程服务，加载数据*/
-		function loadData(code,remoteURL, callbackFun){
+		function loadData(code,remoteURL, callbackFun,qid){
 			if($('#'+blockId(code)).length ==0 ) {
-				return setTimeout(function(){loadData(code,remoteURL, callbackFun);},50);
+				return setTimeout(function(){loadData(code,remoteURL, callbackFun,qid);},50);
 			}
         	
         	$.ajax({async:true,url:remoteURL,
-                data:{'autoInfo.SFZMHM':SFZMHM},
+                data:{'autoInfo.SFZMHM':qid},
                 success:function(myData){
                 	eval( callbackFun? callbackFun :"callback_"+code+"("+myData+")");
                 },cache:false,type:'get'});
@@ -209,7 +209,7 @@
 			if(!code) return;
 			if (node.checked) {
 				showBlock(code, node.text);
-				location.href="#"+getNodeCode(node);
+				//location.href="#"+getNodeCode(node);
 			}else{
 				hideBlock(code,node.text);
 			}

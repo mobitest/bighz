@@ -12,13 +12,15 @@
 	<script type="text/javascript" src="../easyui-1.4.5-hc/jquery.min.js"></script>
 	<script type="text/javascript" src="../easyui-1.4.5-hc/jquery.easyui.min.js"></script>
 </head>
-<body class="easyui-layout" style="background:white">
-	<div data-options="region:'north',border:false" style="height:60px;background:#000;padding:10px;color:white">
+<body style="background:white">
+	<div id="cc"  class="easyui-layout" style="height:100%">
+	<div data-options="region:'north',border:false,split:true" style="height:80px;background:#000;padding:10px;color:white">
 		<h2 ><span class="fa fa-blue fa-database" style="padding-right:5px"></span>杭州政务大数据</h2>
-		</div>
-	<div data-options="region:'west',split:false,title:'功能菜单',hideCollapsedContent:false," 
-		style="width:200px;border:15px">
-    <div id="menuLeft" data-options="region:'center',fit:false" class="easyui-accordion"  style="width:100%;height:auto;">
+	</div>
+	
+	<div data-options="region:'west',split:true,title:'功能菜单',hideCollapsedContent:false," 
+		style="width:200px;border:0px;">
+    <div id="menuLeft" data-options="" class="easyui-accordion"  style="width:100%;height:auto;">
         <div title="欢迎使用" data-options="iconCls:'fa fa-blue fa-bank'" style="overflow:hidden;padding:0px;">
 			<ul class="fa-ul">
 				<li ><i class="fa fa-circle-thin fa-sm"></i><a href="1.htm">法人查询</a></li>
@@ -57,35 +59,89 @@
        </div>
 
     </div>
+  </div><!--!menuLeft-->
     		
 		
+
+
+	<div id="main" data-options="region:'center'" style="padding:0px;">
+		<div style="padding:15px;">
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
+		<h3>主窗口</h3><br>
+		<p>sadf</p>
 		</div>
+	</div>	<!--/main-->
 
-
-	<div data-options="region:'center'" style="padding:10px">
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		<h3>主窗口</h3><br>
-		<p>sadf</p>
-		
-		
 	<div data-options="region:'south',border:false"
 		 style="height:50px;background:#fff;padding:10px;color:gray">
 		 版权所有：杭州市政府 2016 技术支持：浙江鸿程
-		 </div>		
-		</div>
+</div>
+</div><!--/cc-->
+
+<script type="text/javascript">
+	
+//让内容撑开面板高度（东、中、西三块），并由此重设全页面高度，避免多个纵向滚动条
+//调用示范：$("#cc").layout("fullHeight");
+$.extend($.fn.layout.methods, {fullHeight:function(o){
+	var c = o;//$('#cc');
+	var maxIncH = 0;//新增加高度
+	var maxH=0;
+
+	var regions = [{name:"center",v:0},{name:"west",v:0},{name:"east",v:0}, {name:"north",v:1},{name:"south",v:1}];
+	for(var j=0; j< regions.length; j++){
+		var p = c.layout("panel",regions[j].name);
+		if(p.length==0) continue;
+
+		//高度 = 北+max（东，中，西）+南
+		//  ----- 北 ------
+		//  -东 - 中 - 西 -
+		//  ----- 南 ------
+		
+		if(regions[j].v==0) {
+			p.panel("resize",{height:"auto"});
+			var h1 = p.outerHeight();
+			maxH = Math.max(maxH, h1);
+		}else {
+			maxH += p.outerHeight();
+		}
+	}
+
+	//重放整个页面（注意可能有两个分隔条）
+	c.layout('resize',{
+		height:maxH+10
+	});
+}//-method
+});//- extend methods
+
+$(function(){
+	//页面加载完，立即重算一下高度
+	$('#cc').layout("fullHeight");
+
+	//每次展开手风琴面板时，重算一下高度
+	var panels = $('#menuLeft').accordion('panels')
+	$(panels).each(function(){
+		this.panel({onExpand: function(){
+			$("#cc").layout("fullHeight");
+		}});
+	});
+});
+
+	
+
+			</script>
 </body>
 </html>
