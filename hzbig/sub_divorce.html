@@ -1,31 +1,44 @@
-
+<style>
+.tbl-info tr td:nth-child(odd) {
+    background-color: #f7f7f7;
+    font-size:16px;
+}
+.tbl-info tr td:nth-child(even) {
+    color: #000;
+    font-size:18px;
+}	
+</style>
 <div>
-	<table class="tbl-fullwidth" >
+	<table class="tbl-fullwidth tbl-info" >
 
             <tr>
-                <td style="width:250px">离婚证字号</td>
-                <td style="width:250px" id="lhzzh">-</td>
-                <td style="width:250px"></td>
-                <td style="width:250px"></td>
+                <td>离婚证字号</td>
+                <td id="lhzzh" colspan="3">-2352345324535334</td>
             </tr>
             <tr>
                 <td>配偶姓名</td>
-                <td id="cp_name">-</td>
+                <td id="cp_name">-江花样百出</td>
                 <td>配偶身份证号</td>
-                <td id="cp_zjhm">-</td>
+                <td id="cp_zjhm">-2142142342432234</td>
             </tr>
             <tr>
                 <td>承办机构</td>
-                <td id="cbjg">-</td>
+                <td id="cbjg">-西湖区民政局</td>
                 <td>离婚日期</td>
-                <td id="lhrq">-</td>
+                <td id="lhrq">-2016-01-12</td>
             </tr>
             <tr>
                 <td>离婚原因</td>
-                <td id="lhyy">-</td>
+                <td id="lhyy">-感情破裂</td>
                 <td>户口所在地</td>
-                <td  id="czhkszd">-</td>
+                <td  id="czhkszd">-环城西路318号耀江发展大厦</td>
             </tr>
             </tbody>
             </table>
 </div>
+
+<script>
+	function callback_divorce(){
+		//alert("wrewr");
+	}
+	</script>

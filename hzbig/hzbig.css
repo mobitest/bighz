@@ -53,7 +53,7 @@ h2 {
 .tbl-fullwidth tr {
 }
 .tbl-fullwidth td {
-	border:solid #F5F5F5; border-width:0px 1px 1px 0px; 
+	border:solid #ccc; border-width:0px 1px 1px 0px; 
 	border-width: 1px;
 	padding: 5px;
 }

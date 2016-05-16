@@ -31,7 +31,7 @@
                      ]},
      {"id":5,"text":"民政","children":[ 
                        {"id":53,"text":"结婚信息","attributes":{"code":"marry"}},
-                       {"id":54,"text":"离婚信息","attributes":{"code":"divorce"}},
+                       {"id":54,"text":"离婚信息","attributes":{"code":"divorce","url":"person_tree.json"}},
                        {"id":55,"text":"低保信息","attributes":{"code":"dbxx"}}
                        ]}
       ]
